@@ -51,14 +51,13 @@ def __tpl_plots__(col, tpl_im8s):
     for title, im8 in tpl_im8s: plot(im8, title)
     show()
 
-def plots(col, *im8s):
-    if len(im8s) == 1:
-        if isinstance(im8s[0], dict): __dic_plots__(col, im8s[0])
-        elif isinstance(im8s[0], list):
-            if len(im8s[0]) > 1 and isinstance(im8s[0][0], tuple):
-                __tpl_plots__(col, im8s[0])
-            else: __lst_plots__(col, *im8s[0])
-    __lst_plots__(col, im8s)
+def plots(col, im8s):
+    if isinstance(im8s, dict): __dic_plots__(col, im8s)
+    elif isinstance(im8s, list):
+        if len(im8s) > 0 and isinstance(im8s[0], tuple):
+            __tpl_plots__(col, im8s)
+        else: __lst_plots__(col, *im8s)
+
 
 load8 = lambda name: misc.imread(name)
 load32 = lambda name: f32(load8(name))
@@ -88,7 +87,7 @@ class g:
         return self
 
     def show8(self, title=None):
-        plots(1, (title, self))
+        plots(1, [(title, self)])
         return self
 
     def shows(self, col):
@@ -159,7 +158,7 @@ class g:
 
     def insert_lsb8(self, im8):
         self.im = np.where(im8 & 1 == 1, self.im | 1, self.im& 254)
-        return
+        return self
 
     def conv32(self, kernel):
         h, w = self.im.shape
@@ -173,8 +172,12 @@ class g:
     def cp(self):
         return g(self.im.copy())
 
-    def plot(self, title=None):
+    def plot8(self, title=None):
         self.__plots.append((title, self.cp()))
+        return self
+
+    def plotwith8(self, tpl):
+        self.__plots.append(tpl)
         return self
     @staticmethod
     def load8 (name): g(load8(name))
@@ -202,3 +205,4 @@ class kernel:
 data = './data/'
 lena = load8(data+'lena_256.bmp')
 lena32 = f32(lena)
+glena = lambda : g(lena.copy())
