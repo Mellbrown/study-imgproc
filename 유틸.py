@@ -70,12 +70,15 @@ def 영상명도단계변환8 (im8, 임계s):
 영상덧셈32 = lambda im32f, im32g: im32f + im32g
 def 평균노이즈32 (im32s):
     result = np.zeros(shape=im32s[0].shape, dtype=np.float32)
-    for im32 in imf32: result += im32 / len(im32s)
+    for im32 in im32s:
+        result += im32 / len(im32s)
     return result
 영상뺄셈32 = lambda im32f, im32g: np.abs(im32f - im32g)
-
-영비트평면분할 = lambda x : np.array([pow(2, i) * (x >> i & 1) for i in range(7, -1, -1)])
-
+영상논리곱8 = lambda im8f, im8g: np.bitwise_and(im8f, im8g)
+영상논리합8 = lambda im8f, im8g: np.bitwise_or(im8f, im8g)
+비트평면 = lambda 십진수: np.array([pow(2, i) * (십진수 >> i & 1) for i in range(7, -1, -1)])
+영상비트평면분할8 = lambda im8, 비트: np.where((im8 >> 비트 & 1) == 1, 1, 0) * np.power(2, 비트)
+영상최하위비트삽입8 = lambda im8f, im8g: np.where(im8g & 1 == 1, im8f | 1, im8f & 254)
 
 # 4. 공간영역 필터링
 def 영상콘볼루션32(im32, kernel):
