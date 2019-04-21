@@ -81,33 +81,29 @@ def 평균노이즈32 (im32s):
 영상최하위비트삽입8 = lambda im8f, im8g: np.where(im8g & 1 == 1, im8f | 1, im8f & 254)
 
 # 4. 공간영역 필터링
-def 영상콘볼루션32(im32, kernel):
+def 영상콘볼루션32(im32, 커널):
     h, w = im32.shape
-    p = kernel.shape[0] // 2
+    p = 커널.shape[0] // 2
     pimg = np.pad(im32, ((p, p), (p, p)), 'constant', constant_values=(0))
-    return np.array(
-        [
-            [
-                np.sum(pimg[y-p:y+p+1, x-p:x+p+1] * kernel)
-                for x in range(p, w + p)
-            ]
-            for y in range(p, h + p)
-        ]
-    )
-
+    return np.array([[
+        np.sum(pimg[y-p:y+p+1, x-p:x+p+1] * 커널)
+        for x in range(p, w + p) ] for y in range(p, h + p)
+    ])
 엠보싱커널 = lambda: np.array([[-1, 0, 0], [0, 0, 0], [0, 0, 2]])
 평균값커널 = lambda ksize: np.ones(shape=(ksize, ksize)) / (ksize ** 2)
-가중평균값커널 = None
+def 가중평균값커널 (커널일부):
+    k = np.array(커널일부)
+    k = np.hstack(k, np.fliplr(k[:][:k.shape[1]-1]))
+    k = np.vstack(k, np.flipud(k[:k.shape[0]-1][:]))
+    return k / sum(k)
 def 가우시안커널(ksize, sigma):
     ss = sigma**2
     k = ksize//2
-    return np.array(
-        [
-            [
-                1 / (2*np.pi*ss) * np.exp(-(x**2+y**2)/(2 * ss))
-                for x in range(-k, k+1)
-            ]
-            for y in range(-k, k+1)
-        ]
-    )
+    return np.array([[
+        1 / (2*np.pi*ss) * np.exp(-(x**2+y**2)/(2 * ss))
+        for x in range(-k, k+1) ] for y in range(-k, k+1)
+    ])
 
+# 이미지 소스들
+데이터 = './data/'
+이미지레나 = './data/lena_256.bmp'
