@@ -11,12 +11,12 @@ im8 = lambda im32: np.uint8(np.where(im32 > 255, 255, np.where(im32 < 0, 0, im32
 
 # 1. 영상신호의 입출력
 _implot_i = 0
-_implot_size = (1, 1)
+_implot_span = (1, 1)
 
 def implot(im8, title=None):
     global _implot_i
-    global _implot_size
-    y, x = _implot_size
+    global _implot_span
+    y, x = _implot_span
     _implot_i += 1
     plt.subplot(y, x, _implot_i)
     plt.imshow(im8)
@@ -29,9 +29,9 @@ def implots(im8s, w):
 
 def setimplot(h, w, i = 0):
     global _implot_i
-    global _implot_size
+    global _implot_span
     _implot_i = i
-    _implot_size = (h, w)
+    _implot_span = (h, w)
 
 def im3D (im8):
     x = np.arange(0, 256, 1.0)
