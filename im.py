@@ -168,6 +168,7 @@ class g:
             np.sum(pimg[y - p:y + p + 1, x - p:x + p + 1] * kernel)
             for x in range(p, w + p)] for y in range(p, h + p)
         ])
+        return self
 
     def cp(self):
         return g(self.im.copy())
