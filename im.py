@@ -19,7 +19,7 @@ def plot(im8, title=None):
     y, x = _implot_span
     _implot_i += 1
     plt.subplot(y, x, _implot_i)
-    plt.imshow(im8)
+    plt.imshow(im8.im if isinstance(im8, g) else im8)
     plt.gray()
     plt.axis('off')
     plt.title(title if title is not None else '')
@@ -46,10 +46,18 @@ def __lst_plots__(col, lst_im8s):
     for im8 in lst_im8s: plot(im8)
     show()
 
+def __tpl_plots__(col, tpl_im8s):
+    __set_plots__(col, len(tpl_im8s))
+    for title, im8 in tpl_im8s: plot(im8, title)
+    show()
+
 def plots(col, *im8s):
     if len(im8s) == 1:
-        if isinstance(im8s, dict): __dic_plots__(col, *im8s[0])
-        elif isinstance(im8s, list): __lst_plots__(col, *im8s[0])
+        if isinstance(im8s[0], dict): __dic_plots__(col, im8s[0])
+        elif isinstance(im8s[0], list):
+            if len(im8s[0]) > 1 and isinstance(im8s[0][0], tuple):
+                __tpl_plots__(col, im8s[0])
+            else: __lst_plots__(col, *im8s[0])
     __lst_plots__(col, im8s)
 
 load8 = lambda name: misc.imread(name)
@@ -69,6 +77,7 @@ bit_split8 = lambda im8, bit: np.where((im8 >> bit & 1) == 1, 1, 0) * np.power(2
 class g:
     def __init__(self, im8):
         self.im = im8
+        self.__plots = []
 
     def f32(self):
         self.im = f32(self.im)
@@ -79,18 +88,19 @@ class g:
         return self
 
     def show8(self, title=None):
-        plot(self.im, title)
+        plots(1, (title, self))
         return self
 
-    load8 = lambda name: g(load8(name))
-    load32 = lambda name : g(load32(name))
-    lena = (lambda: g(lena))()
+    def shows(self, col):
+        plots(col, self.__plots)
+        return self
+
     def save8(self, name):
-        save8(name, self.im8)
+        save8(name, self.im)
         return self
 
     def inverse8(self):
-        self.im = 255 - self.im8
+        self.im = 255 - self.im
         return self
 
     def bright32(self, bright):
@@ -159,6 +169,17 @@ class g:
             np.sum(pimg[y - p:y + p + 1, x - p:x + p + 1] * kernel)
             for x in range(p, w + p)] for y in range(p, h + p)
         ])
+
+    def cp(self):
+        return g(self.im.copy())
+
+    def plot(self, title=None):
+        self.__plots.append((title, self.cp()))
+        return self
+    @staticmethod
+    def load8 (name): g(load8(name))
+    @staticmethod
+    def load32 (name): g(load32(name))
 
 class kernel:
     embossing = lambda: np.array([[-1, 0, 0], [0, 0, 0], [0, 0, 2]])
