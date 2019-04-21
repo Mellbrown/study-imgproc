@@ -6,8 +6,8 @@ import cv2
 from mpl_toolkits.mplot3d import Axes3D
 
 # 0. 자료형 처리
-imf32 = lambda im8: np.float32(im8)
-imu8 = lambda im32: np.uint8(np.where(im32 > 255, 255, np.where(im32 < 0, 0, im32)))
+im32 = lambda im8: np.float32(im8)
+im8 = lambda im32: np.uint8(np.where(im32 > 255, 255, np.where(im32 < 0, 0, im32)))
 
 # 1. 영상신호의 입출력
 _implot_i = 0
@@ -22,7 +22,10 @@ def implot(im8, title=None):
     plt.imshow(im8)
     plt.gray()
     plt.axis('off')
-    plt.title(title if title is not None else str(_implot_i))
+    plt.title(title if title is not None else '')
+
+def implots(im8s, w):
+    type(im8s)
 
 def setimplot(h, w, i = 0):
     global _implot_i
