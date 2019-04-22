@@ -186,7 +186,7 @@ class g:
     def load32 (name): g(load32(name))
 
 class kernel:
-    embossing = lambda: np.array([[-1, 0, 0], [0, 0, 0], [0, 0, 2]])
+    embossing = lambda: np.array([[-1, 0, 0], [0, 0, 0], [0, 0, 1]])
     mean = lambda ksize: np.ones(shape=(ksize, ksize)) / (ksize ** 2)
     @staticmethod
     def weight_mean(seed):
@@ -207,3 +207,26 @@ data = './data/'
 lena = load8(data+'lena_256.bmp')
 lena32 = f32(lena)
 glena = lambda : g(lena.copy())
+
+# def gaussian1D(ksize, sigma):
+#     ss = sigma ** 2
+#     k = ksize // 2
+#     return [1 / (2 * np.pi * ss) * np.exp(-(x ** 2 + y ** 2) / (2 * ss))]
+
+def gaussian1D(ksize, sigma):
+    G = np.zeros(shape=(ksize), dtype=np.float)
+
+    for x in range(-127, 129):
+        s = 1 / (np.sqrt(2 * np.pi) * sigma)
+        v = -(pow(x, 2)) / (2 * pow(sigma, 2))
+        G[x + 127] = s * np.exp(v)
+
+def plot3D (im8, title = None):
+    x = np.arange(0, 256, 1.0)
+    y = np.arange(0, 256, 1.0)
+    X, Y = np.meshgrid(x, y)
+    fig = plt.figure()
+    ax = Axes3D(fig)
+    ax.set_title(title)
+    ax.plot_surface(X, Y, im8)
+    show()

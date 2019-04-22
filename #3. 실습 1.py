@@ -63,8 +63,13 @@ snapImage(diff1, 'diff1')
 snapImage(diff2, 'diff2')
 snapImage(diff, 'diff')
 
+gray_and = gray_and.astype(dtype=np.float32)
 snapImage(gray_and, 'gray_and')
 snapImage(gray_or, 'gray_or')
+
+
+cv2.imshow('gray_and',gray_and)
+cv2.imshow('gray_or',gray_or)
 
 for i in range(8):
     snapImage(noise[i], 'noise %d' % i)

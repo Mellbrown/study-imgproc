@@ -25,6 +25,17 @@ import im
 # [lena.plotwith8((str(i), img)) for i, img in enumerate(lena.bit_split8())]
 # lena.shows(6)
 
-print(im.glena().plot8('original lena')\
-    .f32().conv32(im.kernel.gaussian(9, 5)).u8().plot8('embossing lena')\
-    .shows(2).im.shape)
+# print(im.glena().plot8('original lena')\
+#     .f32().conv32(im.kernel.embossing()).u8().plot8('embossing lena')\
+#     .shows(2).im.shape)
+
+# from 레거시유틸 import imconv, imsnap
+# imsnap(imconv(im.lena32, im.np.array([
+#     [-1, 0, 0],
+#     [0, 0, 0],
+#     [0, 0, 2]
+# ])), 'embosing')
+# im.show()
+
+im.plot3D(im.lena)
+im.show()
